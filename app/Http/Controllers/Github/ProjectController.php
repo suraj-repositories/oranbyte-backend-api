@@ -37,10 +37,18 @@ class ProjectController extends Controller
 
     public function fetchPopularProjects(Request $request)
     {
-        if($request->has('withImage')){
-            return response()->json($this->githubService->getPopularProjects($request->withImage));
+        try{
+            if($request->has('withImage')){
+                return response()->json($this->githubService->getPopularProjects(5, $request->withImage));
+            }
+            return response()->json($this->githubService->getPopularProjects());
+        }catch(\Exception $e){
+            return response()->json([
+                'error' => 'Failed to fetch popular projects',
+                'message' => $e->getMessage()
+            ], 500);
+
         }
-        return response()->json($this->githubService->getPopularProjects());
     }
 
     public function fetchProjectById($id)

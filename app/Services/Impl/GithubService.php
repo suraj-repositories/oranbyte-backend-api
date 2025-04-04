@@ -38,14 +38,12 @@ class GithubService implements GithubServiceInterface
             throw new \Exception('Token missing in response' . $privateKeyPath);
         }
 
-        $response = Http::withToken($token)->get($url, [
-            'is' => 'public'
-        ]);
+
+        $response = Http::withToken($token)->get($url);
 
         return $response->successful() ? $response->json() : null;
 
     }
-
 
     /**
      * Generate a GitHub JWT for app authentication.
@@ -134,40 +132,26 @@ class GithubService implements GithubServiceInterface
             if(env('GITHUB_USERNAME') == trim($repository['name'])){
                 continue;
             }
-
-            $projects[] = [
-                'id' => $repository['id'],
-                'name' => $repository['name'],
-                'url' => $repository['html_url'],
-                'description' => $repository['description'],
-                'language' => $repository['language'],
-                'stars' => $repository['stargazers_count'],
-                'created_at' => $repository['created_at'],
-                'updated_at' => $repository['updated_at'],
-
-            ];
-
-            if ($withImage == true) {
-                $readme_url = "https://api.github.com/repos/{$repository['owner']['login']}/{$repository['name']}/readme";
-
-                $readme_data = $this->getApiData($readme_url);
-
-                if (isset($readme_data['content'])) {
-                    $readmeContent = base64_decode($readme_data['content']);
-                    $owner = $repository['owner']['login'];
-                    $repoName = $repository['name'];
-                    $imgUrl = $this->extractFirstImageUrl($readmeContent, $owner, $repoName);
-
-                    $projects[count($projects) - 1]['image'] = $imgUrl;
-                }
-            }
+            $projects[] = $this->extractProjectFromRepository($repository, $withImage);
         }
 
         return $projects;
     }
 
-    public function getPopularProjects($withImage = false){
+    public function getPopularProjects($size = 5, $withImage = false){
+        $username = env('GITHUB_USERNAME');
+        $url = 'https://api.github.com/search/repositories?q='. rawurlencode("user:$username").'&sort=stars&order=desc';
+        $response = $this->getApiData($url);
 
+        $repositories = $response['items'] ?? [];
+        $projects = [];
+        foreach($repositories as $repository){
+            if($repository['private']){
+                continue;
+            }
+            $projects[] = $this->extractProjectFromRepository($repository, $withImage);
+        }
+        return $projects;
     }
 
     /**
@@ -201,8 +185,6 @@ class GithubService implements GithubServiceInterface
     function getRepositoryReadme($repoId)
     {
 
-        $accessToken = env('GITHUB_PAT');
-
         $repositories = $this->getRepositories();
 
         foreach ($repositories as $repository) {
@@ -223,7 +205,7 @@ class GithubService implements GithubServiceInterface
         return null;
     }
 
-    function convertImageUrls($content, $owner, $repoName)
+    public function convertImageUrls($content, $owner, $repoName)
     {
         $baseUrl = "https://raw.githubusercontent.com/$owner/$repoName/main/";
 
@@ -285,20 +267,42 @@ class GithubService implements GithubServiceInterface
         foreach ($repositories as $repository) {
             if ($repository['id'] == $projectId) {
 
-                $project = [
-                    'id' => $repository['id'],
-                    'name' => $repository['name'],
-                    'url' => $repository['html_url'],
-                    'description' => $repository['description'],
-                    'language' => $repository['language'],
-                    'stars' => $repository['stargazers_count'],
-                    'created_at' => $repository['created_at'],
-                    'updated_at' => $repository['updated_at'],
-
-                ];
+                $project = $this->extractProjectFromRepository($repository, false);
                 return $project;
             }
         }
         throw new \Exception('Project not found');
     }
+
+
+    private function extractProjectFromRepository($repository, $withImage = false){
+
+        $project = [
+            'id' => $repository['id'],
+            'name' => $repository['name'],
+            'url' => $repository['html_url'],
+            'description' => $repository['description'],
+            'language' => $repository['language'],
+            'stars' => $repository['stargazers_count'],
+            'created_at' => $repository['created_at'],
+            'updated_at' => $repository['updated_at'],
+        ];
+
+        if ($withImage == true) {
+            $readme_url = "https://api.github.com/repos/{$repository['owner']['login']}/{$repository['name']}/readme";
+
+            $readme_data = $this->getApiData($readme_url);
+
+            if (isset($readme_data['content'])) {
+                $readmeContent = base64_decode($readme_data['content']);
+                $owner = $repository['owner']['login'];
+                $repoName = $repository['name'];
+                $imgUrl = $this->extractFirstImageUrl($readmeContent, $owner, $repoName);
+
+                $project['image'] = $imgUrl;
+            }
+        }
+        return $project;
+    }
+
 }

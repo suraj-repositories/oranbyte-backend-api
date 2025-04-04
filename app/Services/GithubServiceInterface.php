@@ -11,7 +11,7 @@ interface GithubServiceInterface
     public function convertImageUrls($content, $owner, $repoName);
 
     public function getProjects($withImage = false);
-    public function getPopularProjects($withImage = false);
+    public function getPopularProjects($size = 5, $withImage = false);
     public function getProjectById($projectId);
     public function getProjectLanguages($projectId);
     public function getRepositoryReadme($repoId);
