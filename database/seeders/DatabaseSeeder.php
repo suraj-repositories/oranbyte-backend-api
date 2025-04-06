@@ -18,7 +18,8 @@ class DatabaseSeeder extends Seeder
             // SocialMediaSeeder::class,
             // UserDetailsSeeder::class,
             // EducationSeeder::class
-            ProfessionalExperienceSeeder::class
+            // ProfessionalExperienceSeeder::class
+            AppConfigSeeder::class
 
         ]);
     }
