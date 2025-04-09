@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AppConfigController;
+use App\Http\Controllers\ContactController;
 use App\Http\Controllers\EducationController;
 use App\Http\Controllers\Github\GitHubController;
 use App\Http\Controllers\Github\ProjectController;
@@ -13,6 +14,7 @@ Route::apiResource('users', UserController::class);
 Route::apiResource('educations', EducationController::class);
 Route::apiResource('experience', ProfessionalExperienceController::class);
 Route::apiResource('app-configs', AppConfigController::class);
+Route::apiResource('contact', ContactController::class);
 
 Route::get('/admin', [UserController::class, 'admin']);
 Route::get('/languages', [GitHubController::class, 'fetchLanguages']);
@@ -24,5 +26,4 @@ Route::get('/projects/popular', [ProjectController::class, 'fetchPopularProjects
 Route::get('/project/{id}', [ProjectController::class, 'fetchProjectById']);
 Route::get('/project/{id}/languages', [ProjectController::class, 'fetchProjectLanguages']);
 Route::get('/project/{id}/readme', [ProjectController::class, 'fetchReadmeContent']);
-
 
