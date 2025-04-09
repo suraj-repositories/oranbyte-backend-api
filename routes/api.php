@@ -6,8 +6,8 @@ use App\Http\Controllers\EducationController;
 use App\Http\Controllers\Github\GitHubController;
 use App\Http\Controllers\Github\ProjectController;
 use App\Http\Controllers\ProfessionalExperienceController;
+use App\Http\Controllers\SocialMediaController;
 use App\Http\Controllers\UserController;
-use App\Models\Education;
 use Illuminate\Support\Facades\Route;
 
 Route::apiResource('users', UserController::class);
@@ -15,6 +15,7 @@ Route::apiResource('educations', EducationController::class);
 Route::apiResource('experience', ProfessionalExperienceController::class);
 Route::apiResource('app-configs', AppConfigController::class);
 Route::apiResource('contact', ContactController::class);
+Route::apiResource('social-media', SocialMediaController::class);
 
 Route::get('/admin', [UserController::class, 'admin']);
 Route::get('/languages', [GitHubController::class, 'fetchLanguages']);
