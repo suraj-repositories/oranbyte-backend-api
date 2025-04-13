@@ -17,7 +17,7 @@ interface GithubServiceInterface
     public function getRepositoryReadme($repoId);
     public function getProfileReadmeContent();
 
-
+    public function getStargazers($stargazers_url);
 
     // public function getRepositoryDetails($accessToken, $username, $repoName);
     // public function getRepositoryLanguages($accessToken, $username, $repoName);

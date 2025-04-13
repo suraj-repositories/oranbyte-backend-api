@@ -305,4 +305,10 @@ class GithubService implements GithubServiceInterface
         return $project;
     }
 
+    public function getStargazers($stargazers_url)
+    {
+        return $this->getApiData($stargazers_url);
+
+    }
+
 }
