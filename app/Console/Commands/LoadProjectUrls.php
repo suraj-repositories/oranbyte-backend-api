@@ -104,13 +104,9 @@ class LoadProjectUrls extends Command
         return [
             'github'        => "https://github.com/{$owner}/{$repo}",
             'stargazers'    => "https://api.github.com/repos/{$owner}/{$repo}/stargazers",
-            'watchers'      => "https://api.github.com/repos/{$owner}/{$repo}/subscribers",
             'forks'         => "https://api.github.com/repos/{$owner}/{$repo}/forks",
             'issues'        => "https://api.github.com/repos/{$owner}/{$repo}/issues",
-            'pull_requests' => "https://api.github.com/repos/{$owner}/{$repo}/pulls",
             'commits'       => "https://api.github.com/repos/{$owner}/{$repo}/commits",
-            'contributors'  => "https://api.github.com/repos/{$owner}/{$repo}/contributors",
-            'releases'      => "https://api.github.com/repos/{$owner}/{$repo}/releases",
             'readme'        => "https://api.github.com/repos/{$owner}/{$repo}/readme",
         ];
     }

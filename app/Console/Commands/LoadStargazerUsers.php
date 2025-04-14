@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Models\Project;
+use App\Models\Stargazer;
 use App\Models\User;
 use App\Services\GithubServiceInterface;
 use Illuminate\Console\Command;
@@ -78,19 +79,17 @@ class LoadStargazerUsers extends Command
                 }
                 foreach($stargazers as $stargazer){
 
-                    User::updateOrCreate(
-                    [
-                        'github_id' => $stargazer['id'],
-                    ],
-                    [
-                        'name' => $stargazer['login'],
-                        'avatar' => $stargazer['avatar_url'],
-                        'username' => $stargazer['login'],
-                        'email' => $stargazer['login'] . '@'. strtolower(config('app.name')) .'.com',
-                        'password' => Hash::make(Str::random(10)),
-                        'role' => 'GITHUB_USER',
-
-                    ]);
+                    Stargazer::updateOrCreate(
+                        [
+                            'github_id' => $stargazer['id'],
+                            'project_id' => $project->id,
+                        ],
+                        [
+                            'github_username' => $stargazer['login'],
+                            'github_url' => $stargazer['html_url'],
+                            'avatar_url' => $stargazer['avatar_url'],
+                        ]
+                    );
                     $this->info('Stargazer user: ' . $stargazer['login'] . ' added/updated.');
 
                 }

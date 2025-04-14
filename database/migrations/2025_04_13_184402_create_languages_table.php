@@ -11,16 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('projects', function (Blueprint $table) {
+        Schema::create('languages', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->foreignId('repository_id')->unique();
-            $table->string('name');
+            $table->string('name')->unique();
+            $table->string('logo')->nullable();
+            $table->string('icon')->nullable();
             $table->string('description')->nullable();
-            $table->string('url')->unique();
-            $table->string('image')->nullable();
-            $table->string('language')->nullable();
-            $table->integer('stars')->default(0);
             $table->timestamps();
         });
     }
@@ -30,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('projects');
+        Schema::dropIfExists('languages');
     }
 };

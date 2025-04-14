@@ -77,6 +77,7 @@ class LoadProjectCommand extends Command
                     'url' => $project['url'],
                     'image' => $project['image'],
                     'language' => $project['language'],
+                    'stars' => $project['stars'],
                     'created_at' => $project['created_at'],
                     'updated_at' => $project['updated_at'],
                 ]

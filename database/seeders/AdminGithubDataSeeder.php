@@ -17,6 +17,6 @@ class AdminGithubDataSeeder extends Seeder
 
         Artisan::call("app:load-project-command");
         Artisan::call("app:load-project-urls");
-        // Artisan::call("app:load-project-command");
+        Artisan::call("app:load-stargazer-users");
     }
 }

@@ -14,6 +14,7 @@ class Project extends Model
         'description',
         'url',
         'image',
+        'stars',
         'language',
         'created_at',
         'updated_at',
