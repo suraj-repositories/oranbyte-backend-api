@@ -30,7 +30,12 @@ class Project extends Model
         return $this->hasMany(ProjectUrl::class);
     }
 
+    public function languages()
+    {
+        return $this->hasMany(ProjectLanguage::class);
+    }
 
-
-
+    public function readme(){
+        return $this->hasOne(Readme::class);
+    }
 }

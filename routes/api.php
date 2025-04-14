@@ -26,7 +26,7 @@ Route::get('/repositories', [GitHubController::class, 'fetchRepositories']);
 Route::get('/projects', [ProjectController::class, 'fetchProjects']);
 Route::get('/project/readme', [ProjectController::class, 'fetchProfileReadmeContent']);
 Route::get('/projects/popular', [ProjectController::class, 'fetchPopularProjects']);
-Route::get('/project/{id}', [ProjectController::class, 'fetchProjectById']);
-Route::get('/project/{id}/languages', [ProjectController::class, 'fetchProjectLanguages']);
-Route::get('/project/{id}/readme', [ProjectController::class, 'fetchReadmeContent']);
+Route::get('/project/{project}', [ProjectController::class, 'fetchProjectById']);
+Route::get('/project/{project}/languages', [ProjectController::class, 'fetchProjectLanguages']);
+Route::get('/project/{project}/readme', [ProjectController::class, 'fetchReadmeContent']);
 
