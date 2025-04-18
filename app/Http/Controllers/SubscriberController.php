@@ -15,6 +15,10 @@ class SubscriberController extends Controller
         $this->userAgentService = $userAgentService;
     }
 
+    public function index(){
+        return response()->json(Subscriber::all());
+    }
+
     //
     public function store(Request $request)
     {

@@ -17,7 +17,7 @@ Route::apiResource('experience', ProfessionalExperienceController::class);
 Route::apiResource('app-configs', AppConfigController::class);
 Route::apiResource('contact', ContactController::class);
 Route::apiResource('social-media', SocialMediaController::class);
-Route::apiResource('subsribers', SubscriberController::class);
+Route::apiResource('subscribe', SubscriberController::class);
 
 Route::get('/admin', [UserController::class, 'admin']);
 Route::get('/languages', [GitHubController::class, 'fetchLanguages']);

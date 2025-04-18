@@ -105,7 +105,7 @@ class GithubService implements GithubServiceInterface
             throw new \Exception('Failed to fetch repositories');
         }
 
-        return  collect($repositories['repositories'])->where('visibility', 'public');
+        return collect($repositories['repositories'])->where('visibility', 'public');
     }
 
     /**
