@@ -30,9 +30,9 @@ class Project extends Model
         return $this->hasMany(ProjectUrl::class);
     }
 
-    public function languages()
+    public function technologies()
     {
-        return $this->hasMany(ProjectLanguage::class);
+        return $this->hasMany(ProjectTechnology::class);
     }
 
     public function readme(){

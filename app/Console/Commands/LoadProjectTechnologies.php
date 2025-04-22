@@ -2,20 +2,20 @@
 
 namespace App\Console\Commands;
 
-use App\Models\Language;
 use App\Models\Project;
-use App\Models\ProjectLanguage;
+use App\Models\ProjectTechnology;
+use App\Models\Technology;
 use App\Services\GithubServiceInterface;
 use Illuminate\Console\Command;
 
-class LoadProjectLanguages extends Command
+class LoadProjectTechnologies extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'app:load-project-languages';
+    protected $signature = 'app:load-project-technologies';
 
     /**
      * The console command description.
@@ -62,13 +62,13 @@ class LoadProjectLanguages extends Command
                 if($languages){
                     foreach ($languages as $language => $percentage) {
 
-                        $dbLanguage = Language::updateOrCreate(
+                        $dbLanguage = Technology::updateOrCreate(
                             ['name' => $language],
                             ['name' => $language]
                         );
 
-                        ProjectLanguage::updateOrCreate(
-                            ['project_id' => $project->id, 'language_id' => $dbLanguage->id],
+                        ProjectTechnology::updateOrCreate(
+                            ['project_id' => $project->id, 'technology_id' => $dbLanguage->id],
                             ['percentage' => $percentage]
                         );
                     }

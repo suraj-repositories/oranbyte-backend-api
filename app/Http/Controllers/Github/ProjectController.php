@@ -101,16 +101,16 @@ class ProjectController extends Controller
 
     public function fetchProjectLanguages(Project $project)
     {
+
         try {
             return response()->json(
-                $project->languages->mapWithKeys(fn($lang) => [
-                    $lang->language->name => $lang->percentage
+                $project->technologies->mapWithKeys(fn($lang) => [
+                    $lang->technology->name => $lang->percentage
                 ])
             );
-
         } catch (\Exception $e) {
             return response()->json([
-                'error' => 'Failed to fetch project languages',
+                'error' => 'Failed to fetch project technology',
                 'message' => $e->getMessage()
             ], 500);
         }
