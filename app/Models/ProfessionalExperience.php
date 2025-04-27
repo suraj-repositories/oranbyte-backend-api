@@ -18,4 +18,12 @@ class ProfessionalExperience extends Model
         'description',
         'user_id',
     ];
+
+
+    public function technologies()
+    {
+        return $this->belongsToMany(Technology::class, 'experience_technology')
+            ->using(ExperienceTechnology::class)
+            ->withTimestamps();
+    }
 }
