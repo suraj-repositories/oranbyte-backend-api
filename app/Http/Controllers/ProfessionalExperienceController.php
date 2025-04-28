@@ -11,7 +11,7 @@ class ProfessionalExperienceController extends Controller
     public function index()
     {
         try {
-            return ProfessionalExperience::with('technologies:name,id')->get()
+            return ProfessionalExperience::with('technologies:name,id')->orderByDesc('id')->get()
                 ->map(function ($exp) {
                     return [
                         'id' => $exp->id,

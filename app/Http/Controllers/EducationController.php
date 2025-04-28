@@ -13,7 +13,7 @@ class EducationController extends Controller
     {
         try {
             $userId = User::where('role', 'ADMIN')->value('id');
-            return Education::where('user_id', $userId)->get();
+            return Education::where('user_id', $userId)->orderByDesc('id')->get();
         } catch (\Exception $e) {
             return response()->json([
                 'error' => 'Failed to fetch educations',

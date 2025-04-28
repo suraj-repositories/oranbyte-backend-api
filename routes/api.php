@@ -6,8 +6,11 @@ use App\Http\Controllers\EducationController;
 use App\Http\Controllers\Github\GitHubController;
 use App\Http\Controllers\Github\ProjectController;
 use App\Http\Controllers\ProfessionalExperienceController;
+use App\Http\Controllers\SkillController;
 use App\Http\Controllers\SocialMediaController;
+use App\Http\Controllers\StatsController;
 use App\Http\Controllers\SubscriberController;
+use App\Http\Controllers\TermController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -18,6 +21,12 @@ Route::apiResource('app-configs', AppConfigController::class);
 Route::apiResource('contact', ContactController::class);
 Route::apiResource('social-media', SocialMediaController::class);
 Route::apiResource('subscribe', SubscriberController::class);
+Route::apiResource('skills', SkillController::class);
+
+Route::apiResource('terms', TermController::class);
+Route::get('/term/latest', [TermController::class, 'latestTerm']);
+Route::get('/stats', [StatsController::class, 'index']);
+
 
 Route::get('/admin', [UserController::class, 'admin']);
 Route::get('/languages', [GitHubController::class, 'fetchLanguages']);
@@ -29,4 +38,3 @@ Route::get('/projects/popular', [ProjectController::class, 'fetchPopularProjects
 Route::get('/project/{project}', [ProjectController::class, 'fetchProjectById']);
 Route::get('/project/{project}/languages', [ProjectController::class, 'fetchProjectLanguages']);
 Route::get('/project/{project}/readme', [ProjectController::class, 'fetchReadmeContent']);
-
