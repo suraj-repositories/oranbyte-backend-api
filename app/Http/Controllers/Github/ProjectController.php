@@ -97,12 +97,51 @@ class ProjectController extends Controller
             ], 500);
         }
     }
+    public function fetchProjectByName($projectName)
+    {
+        try {
+
+            $project = Project::where('name', $projectName)->firstOrFail();
+            if (!$project) {
+                return response()->json([
+                    'error' => 'Project not found',
+                    'message' => 'This project does not exist.'
+                ], 404);
+            }
+            $data = $project->only([
+                'id',
+                'name',
+                'url',
+                'description',
+                'language',
+                'stars',
+                'image',
+                'created_at',
+                'updated_at'
+            ]);
+
+            return response()->json($data);
+        } catch (\Throwable $e) {
+            return response()->json([
+                'error' => 'Failed to fetch project',
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
 
 
-    public function fetchProjectLanguages(Project $project)
+    public function fetchProjectLanguages($projectName)
     {
 
         try {
+            $project = Project::where('name', $projectName)->firstOrFail();
+            if (!$project) {
+                return response()->json([
+                    'error' => 'Project not found',
+                    'message' => 'This project does not exist.'
+                ], 404);
+            }
+
             return response()->json(
                 $project->technologies->mapWithKeys(fn($lang) => [
                     $lang->technology->name => $lang->percentage
@@ -115,9 +154,16 @@ class ProjectController extends Controller
             ], 500);
         }
     }
-public function fetchReadmeContent(Project $project)
+public function fetchReadmeContent($projectName)
 {
     try {
+        $project = Project::where('name', $projectName)->firstOrFail();
+        if (!$project) {
+            return response()->json([
+                'error' => 'Project not found',
+                'message' => 'This project does not exist.'
+            ], 404);
+        }
         $content = $project->readme?->content;
 
         if (is_null($content)) {
