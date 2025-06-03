@@ -120,6 +120,8 @@ class ProjectController extends Controller
                 'updated_at'
             ]);
 
+            $data['gh1s_url'] = str_replace('https://github.com/', 'https://github1s.com/', $data['url']);
+
             return response()->json($data);
         } catch (\Throwable $e) {
             return response()->json([
