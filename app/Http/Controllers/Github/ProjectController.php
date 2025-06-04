@@ -146,7 +146,7 @@ class ProjectController extends Controller
 
             return response()->json(
                 $project->technologies->mapWithKeys(fn($lang) => [
-                    $lang->technology->name => $lang->percentage
+                    $lang->technology->name => round($lang->percentage, 2)
                 ])
             );
         } catch (\Exception $e) {
