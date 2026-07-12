@@ -9,7 +9,8 @@ use Firebase\JWT\JWT;
 class GithubService implements GithubServiceInterface
 {
 
-    public function getApiData($url){
+    public function getApiData($url)
+    {
         $installationId = env('GITHUB_INSTALLATION_ID');
         $appId = env('GITHUB_APP_ID');
         $privateKeyPath = storage_path(env('GITHUB_PRIVATE_KEY_PATH'));
@@ -42,7 +43,6 @@ class GithubService implements GithubServiceInterface
         $response = Http::withToken($token)->get($url);
 
         return $response->successful() ? $response->json() : null;
-
     }
 
     /**
@@ -101,7 +101,7 @@ class GithubService implements GithubServiceInterface
     public function getRepositories()
     {
         $repositories = $this->getApiData('https://api.github.com/installation/repositories');
-        if(!$repositories) {
+        if (!$repositories) {
             throw new \Exception('Failed to fetch repositories');
         }
 
@@ -129,7 +129,7 @@ class GithubService implements GithubServiceInterface
             if ($repository['private']) {
                 continue;
             }
-            if(env('GITHUB_USERNAME') == trim($repository['name'])){
+            if (env('GITHUB_USERNAME') == trim($repository['name'])) {
                 continue;
             }
             $projects[] = $this->extractProjectFromRepository($repository, $withImage);
@@ -138,15 +138,16 @@ class GithubService implements GithubServiceInterface
         return $projects;
     }
 
-    public function getPopularProjects($size = 5, $withImage = false){
+    public function getPopularProjects($size = 5, $withImage = false)
+    {
         $username = env('GITHUB_USERNAME');
-        $url = 'https://api.github.com/search/repositories?q='. rawurlencode("user:$username").'&sort=stars&order=desc';
+        $url = 'https://api.github.com/search/repositories?q=' . rawurlencode("user:$username") . '&sort=stars&order=desc';
         $response = $this->getApiData($url);
 
         $repositories = $response['items'] ?? [];
         $projects = [];
-        foreach($repositories as $repository){
-            if($repository['private']){
+        foreach ($repositories as $repository) {
+            if ($repository['private']) {
                 continue;
             }
             $projects[] = $this->extractProjectFromRepository($repository, $withImage);
@@ -207,15 +208,55 @@ class GithubService implements GithubServiceInterface
 
     public function convertImageUrls($content, $owner, $repoName)
     {
-        $baseUrl = "https://raw.githubusercontent.com/$owner/$repoName/main/";
+        $baseUrl = "https://raw.githubusercontent.com/{$owner}/{$repoName}/main/";
 
-        return preg_replace_callback('/<img\s+[^>]*src=["\']([^"\']+)["\']/i', function ($matches) use ($baseUrl) {
-            $src = $matches[1];
-            if (!preg_match('/^https?:\/\//', $src)) {
-                $src = $baseUrl . ltrim($src, '/');
-            }
-            return str_replace($matches[1], $src, $matches[0]);
-        }, $content);
+        return preg_replace_callback(
+            '/<(img|source)\b[^>]*\b(src|srcset)=["\']([^"\']+)["\'][^>]*>/i',
+            function ($matches) use ($baseUrl) {
+                $attribute = $matches[2];
+                $url = trim($matches[3]);
+
+                if (
+                    preg_match('/^(https?:)?\/\//i', $url) ||
+                    str_starts_with($url, 'data:') ||
+                    str_starts_with($url, 'blob:') ||
+                    str_starts_with($url, '#')
+                ) {
+                    return $matches[0];
+                }
+
+                if (strtolower($attribute) === 'srcset') {
+                    $srcset = implode(', ', array_map(function ($item) use ($baseUrl) {
+                        $item = trim($item);
+
+                        $parts = preg_split('/\s+/', $item, 2);
+                        $url = $parts[0];
+                        $descriptor = $parts[1] ?? '';
+
+                        if (
+                            preg_match('/^(https?:)?\/\//i', $url) ||
+                            str_starts_with($url, 'data:') ||
+                            str_starts_with($url, 'blob:') ||
+                            str_starts_with($url, '#')
+                        ) {
+                            return $item;
+                        }
+
+                        $url = $baseUrl . ltrim($url, '/');
+
+                        return trim($url . ' ' . $descriptor);
+                    }, explode(',', $url)));
+
+                    return str_replace($matches[3], $srcset, $matches[0]);
+                }
+
+                // Handle normal src
+                $url = $baseUrl . ltrim($url, '/');
+
+                return str_replace($matches[3], $url, $matches[0]);
+            },
+            $content
+        );
     }
 
     private function extractFirstImageUrl($content, $owner, $repoName)
@@ -275,7 +316,8 @@ class GithubService implements GithubServiceInterface
     }
 
 
-    private function extractProjectFromRepository($repository, $withImage = false){
+    private function extractProjectFromRepository($repository, $withImage = false)
+    {
 
         $project = [
             'id' => $repository['id'],
@@ -308,7 +350,5 @@ class GithubService implements GithubServiceInterface
     public function getStargazers($stargazers_url)
     {
         return $this->getApiData($stargazers_url);
-
     }
-
 }
